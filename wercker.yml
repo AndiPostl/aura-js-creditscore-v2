@@ -82,7 +82,7 @@ deploy-app-to-oce:
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_TOKEN
         insecure-skip-tls-verify: true
-         command: apply -f <(istioctl kube-inject -f kubernetes-deployment.yml)
+        command: apply -f <(istioctl kube-inject -f kubernetes-deployment.yml)
 
 # This step prints the traffic routing rules, if any
     - script:
