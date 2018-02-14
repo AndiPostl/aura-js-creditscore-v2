@@ -34,29 +34,29 @@ deploy-app-to-oce:
         
     # Wercker kubectl step currently doesn't support embedded istioctl commands like manual side car injection
     # Hence as a *workaround*, in this step we generate and save your kubeconfig for embedded istioctl to work
-    - script:
-      name: generate and save kubeconfig
-      code: |
-        mkdir -p /root/.kube
-        echo "
-        apiVersion: v1
-        clusters:
-          - cluster:
-              insecure-skip-tls-verify: true
-              server: ${KUBERNETES_MASTER}
-            name: cluster-${KUBERNETES_CLUSTER_ID}
-        contexts:
-          - context:
-              cluster: cluster-${KUBERNETES_CLUSTER_ID}
-              user: user-${KUBERNETES_CLUSTER_ID}
-            name: context-${KUBERNETES_CLUSTER_ID}
-        current-context: context-${KUBERNETES_CLUSTER_ID}
-        kind: ""
-        users:
-          - name: user-${KUBERNETES_CLUSTER_ID}
-            user:
-              token: ${KUBERNETES_TOKEN}
-        " > /root/.kube/config
+#    - script:
+#      name: generate and save kubeconfig
+#      code: |
+#        mkdir -p /root/.kube
+#        echo "
+#        apiVersion: v1
+#        clusters:
+#          - cluster:
+#              insecure-skip-tls-verify: true
+#              server: ${KUBERNETES_MASTER}
+#            name: cluster-${KUBERNETES_CLUSTER_ID}
+#        contexts:
+#          - context:
+#              cluster: cluster-${KUBERNETES_CLUSTER_ID}
+#              user: user-${KUBERNETES_CLUSTER_ID}
+#            name: context-${KUBERNETES_CLUSTER_ID}
+#        current-context: context-${KUBERNETES_CLUSTER_ID}
+#        kind: ""
+#        users:
+#          - name: user-${KUBERNETES_CLUSTER_ID}
+#            user:
+#              token: ${KUBERNETES_TOKEN}
+#        " > /root/.kube/config
         
     - script:
         name: "Visualise Kubernetes deployment"
@@ -77,12 +77,12 @@ deploy-app-to-oce:
         command: create secret docker-registry wrelease --docker-server=wcr.io --docker-username=$WERCKER_APPLICATION_OWNER_NAME --docker-password=$KUBERNETES_TOKEN --docker-email=abc@gmail.com
         
 # Deploy the app with istio side car injection (manual)
-#    - kubectl:
-#        name: create deplyoment
-#        server: $KUBERNETES_MASTER
-#        token: $KUBERNETES_TOKEN
-#        insecure-skip-tls-verify: true
-#        command: apply -f <(istioctl kube-inject -f kubernetes-deployment.yml)
+    - kubectl:
+        name: create deplyoment
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_TOKEN
+        insecure-skip-tls-verify: true
+         command: apply -f <(istioctl kube-inject -f kubernetes-deployment.yml)
 
 # This step prints the traffic routing rules, if any
     - script:
